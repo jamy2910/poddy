@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 const Footer = () => {
     return (
-        <div className='py-20 bg-emerald-700 mt-4 relative'>
+        <div className='py-20 bg-emerald-700 rounded mt-4 relative'>
             <div className='flex gap-x-2 justify-center'>
                 <NavLink className='text-white no-underline hover:underline'>Home</NavLink>
                 <NavLink className='text-white no-underline hover:underline'>Explore</NavLink>

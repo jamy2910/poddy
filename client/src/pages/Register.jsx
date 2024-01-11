@@ -16,7 +16,7 @@ const Register = () => {
                 <div></div>
 
                 {/* Second Column (Register) */}
-                <div className='flex flex-col gap-y-4 items-center border border-solid pb-4 border-emerald-700'>
+                <div className='flex flex-col gap-y-4 items-center rounded border border-solid pb-4 border-emerald-700'>
                     <h2 className='text-center text-white bg-emerald-700 p-4 self-stretch m-0'>Register</h2>
                     <LoginInput title={'Username'} />
                     <LoginInput type={'email'} title={'E-mail'} />
