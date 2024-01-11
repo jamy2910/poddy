@@ -11,31 +11,31 @@ import channelRouter from './routes/channelRouter.js';
 import podcastRouter from './routes/podcastRouter.js';
 import cookieParser from "cookie-parser";
 
-    // App initialization
-    dotenv.config();
-    const app = express();
+// App initialization
+dotenv.config();
+const app = express();
 
-    // Global middleware
-    app.use(express.json());
-    app.use(cookieParser());
+// Global middleware
+app.use(express.json());
+app.use(cookieParser());
 
-    // Variables
-    const port = process.env.PORT;
-
-
-    // Routers
-    app.use('/api/v1/profile', profileRouter);
-    app.use('/api/v1/channel', channelRouter);
-    app.use('/api/v1/auth', authRouter);
-    app.use('/api/v1/comment', commentRouter);
-    app.use('/api/v1/like', likeRouter);
-    app.use('/api/v1/subscribe', subscribeRouter);
-    app.use('/api/v1/podcast', podcastRouter);
+// Variables
+const port = process.env.PORT;
 
 
-    // Startup
-    app.listen(port, () => {
-        console.log(`Server is listening on port ${port}...`);
-    });
+// Routers
+app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/channel', channelRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/comment', commentRouter);
+app.use('/api/v1/like', likeRouter);
+app.use('/api/v1/subscribe', subscribeRouter);
+app.use('/api/v1/podcast', podcastRouter);
+
+
+// Startup
+app.listen(port, () => {
+    console.log(`Server is listening on port ${port}...`);
+});
 
 

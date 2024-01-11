@@ -20,8 +20,8 @@ export const getChannels = async (req, res) => {
 
     const { rows: response } = await db.query(query + ' LIMIT 10');
 
-    if(response.length < 1) {
-        return res.status(404).json({msg: 'No channels found'});
+    if (response.length < 1) {
+        return res.status(404).json({ msg: 'No channels found' });
     }
 
     for (const channel of response) {
@@ -77,8 +77,8 @@ export const deleteChannel = async (req, res) => {
 
     // Check if user owns the channel
     const response = await db.query('DELETE FROM channels WHERE id = $1 AND userId = $2', [channelID, id]);
-    if(response.rowCount < 1) {
-        return res.status(401).json({msg: 'Unable to delete'});
+    if (response.rowCount < 1) {
+        return res.status(401).json({ msg: 'Unable to delete' });
     }
 
     const deleteResponse = await deleteChannelPic(channelID);
@@ -99,7 +99,7 @@ export const editChannel = async (req, res) => {
     // Check to see if user owns the channel
     const editResponse = await db.query('UPDATE channels SET title = $1, subheading = $2, description = $3 WHERE userid = $4 AND id = $5', [title, subheading, description, id, channelId]);
     if (editResponse.rowCount < 1) {
-        return res.status(401).json({msg: 'unautheticated'})
+        return res.status(401).json({ msg: 'unautheticated' })
     }
 
     if (channelPic) {
