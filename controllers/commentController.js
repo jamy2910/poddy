@@ -35,7 +35,7 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     // Check if user owns the comment
-    const { rows: userCheck } = await db.query('SELECT * FROM comments WHERE id = $1 AND userid = $2', [commentId, id]);
+    const { rows: userCheck } = await db.query('SELECT id FROM comments WHERE id = $1 AND userid = $2', [commentId, id]);
     if (userCheck.length < 1) {
         return res.status(401).json({ msg: 'unauthenticated' });
     }

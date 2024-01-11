@@ -5,7 +5,7 @@ import { getPodcastPreSignedUrl, uploadPodcastThumbanail } from "../utils/s3Util
 export const getAllPodcasts = async (req, res) => {
     const { search, date, category } = req.query;
 
-    const query = 'SELECT * FROM podcasts WHERE 1=1';
+    const query = 'SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE 1=1';
     const paramIndex = 1;
 
     if (search) {
@@ -23,7 +23,7 @@ export const getAllPodcasts = async (req, res) => {
         paramIndex++;
     }
 
-    const { rows: response } = await db.query(query + ' LIMIT 10');
+    const { rows: response } = await db.query(query + ' GROUP BY podcasts.id LIMIT 10');
 
     for (const podcast of response) {
         await getPodcastPreSignedUrl(podcast);
@@ -36,6 +36,11 @@ export const getSinglePodcast = async (req, res) => {
     const { podcastId } = req.params;
 
     const { rows: response } = await db.query('SELECT * FROM podcasts WHERE id = $1', [podcastId]);
+
+    const { rows } = await db.query('SELECT COUNT(id) AS likes FROM likes WHERE podcastid = $1', [podcastId]);
+    const { likes } = rows[0];
+
+    response[0].likes = Number(likes);
 
     if (response.length < 1) {
         return res.status(404).json({ msg: 'No podcast found' });
@@ -54,6 +59,11 @@ export const createPodcast = async (req, res) => {
     const { channelId } = req.params;
     const thumbnail = req.file;
     const podcastId = nanoid(); // Create a unique id for the podcast
+
+    if (!thumbnail) {
+        return res.status(404).json({ msg: 'Upload an image' })
+    }
+
     thumbnail.id = podcastId; // Give the image an id for uploading to s3
     const { id } = req.user;
 
