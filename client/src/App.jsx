@@ -14,6 +14,7 @@ import Live from './pages/Live'
 import Trending from './pages/Trending'
 import Explore from './pages/Explore'
 import PageLayout from './pages/PageLayout'
+import AuthContext from './auth/AuthContext'
 
 
 
@@ -81,7 +82,10 @@ const router = createBrowserRouter([
 function App() {
 
   return (
-    <RouterProvider router={router} />
+    <AuthContext>
+      <RouterProvider router={router} />
+    </AuthContext>
+
   )
 }
 

@@ -1,14 +1,10 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
 import LoginInput from '../components/LoginInput'
 import StandardButton from '../components/StandardButton'
 
 const Register = () => {
     return (
-        <div className='xl:w-3/4 md:w-11/12 mx-auto font-main'>
-            <Navbar />
 
+        <>
             {/* Grid Container Wrapper */}
             <div className='mb-96 grid grid-cols-2 gap-x-4'>
 
@@ -25,9 +21,9 @@ const Register = () => {
                     <StandardButton>Register</StandardButton>
                 </div>
             </div>
+        </>
 
-            <Footer />
-        </div>
+
     )
 }
 
