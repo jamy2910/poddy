@@ -1,32 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import PodcastGrid from '../components/PodcastGrid'
-import ChannelCard from '../components/PodcastCard'
 import Footer from '../components/Footer'
+import { customFetch } from '../utils/customFetch'
+import Podcasts from '../components/Podcasts'
+import PageWrapper from '../components/PageWrapper'
 
 const Trending = () => {
-  return (
-    <div className='xl:w-3/4 md:w-11/12 mx-auto font-main'>
-        <Navbar />
+
+    // Hooks
+    const [podcasts, setPodcasts] = useState([]);
+
+    useEffect(() => {
+        const getPodcasts = async () => {
+            try {
+                const { data } = await customFetch.get('/podcast?sort=trending');
+                console.log(data);
+                setPodcasts(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        getPodcasts();
+    }, [])
+
+    // JSX
+    return (
+        <>
+            <h2>Trending podcasts</h2>
+            <Podcasts podcastList={podcasts} />
+        </>
 
 
-        <h2>Trending podcasts</h2>
-        <PodcastGrid>
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-            <ChannelCard />
-        </PodcastGrid>
-
-        <Footer />
-    </div>
-  )
+    )
 }
 
 export default Trending

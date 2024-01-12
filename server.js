@@ -10,12 +10,14 @@ import profileRouter from "./routes/profileRouter.js";
 import channelRouter from './routes/channelRouter.js';
 import podcastRouter from './routes/podcastRouter.js';
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 // App initialization
 dotenv.config();
 const app = express();
 
 // Global middleware
+app.use(cors({ credentials: true, origin: true }))
 app.use(express.json());
 app.use(cookieParser());
 

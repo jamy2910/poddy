@@ -13,68 +13,75 @@ import Login from './pages/Login'
 import Live from './pages/Live'
 import Trending from './pages/Trending'
 import Explore from './pages/Explore'
+import PageLayout from './pages/PageLayout'
 
 
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Landing />
-  },
-  {
-    path: '/explore',
-    element: <Explore />
-  },
-  {
-    path: '/trending',
-    element: <Trending />
-  },
-  {
-    path: '/live',
-    element: <Live />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/register-confirm',
-    element: <RegisterConfirmation />
-  },
-  {
-    path: '/podcast/:id',
-    element: <SinglePodcast />
-  },
-  {
-    path: '/myprofile',
-    element: <MyProfile />
-  },
-  {
-    path: '/manageaccount',
-    element: <ManageAccount />
-  },
-  {
-    path: '/mychannels',
-    element: <MyChannels />
-  },
-  {
-    path: '/activity',
-    element: <Activity />
-  },
-  {
-    path: '/createchannel',
-    element: <CreateChannel />
+    element: <PageLayout />,
+    children: [
+      {
+        path: '/',
+        element: <Landing />
+      },
+      {
+        path: '/explore',
+        element: <Explore />
+      },
+      {
+        path: '/trending',
+        element: <Trending />
+      },
+      {
+        path: '/live',
+        element: <Live />
+      },
+      {
+        path: '/login',
+        element: <Login />
+      },
+      {
+        path: '/register',
+        element: <Register />
+      },
+      {
+        path: '/register-confirm',
+        element: <RegisterConfirmation />
+      },
+      {
+        path: '/podcast/:id',
+        element: <SinglePodcast />
+      },
+      {
+        path: '/myprofile',
+        element: <MyProfile />
+      },
+      {
+        path: '/manageaccount',
+        element: <ManageAccount />
+      },
+      {
+        path: '/mychannels',
+        element: <MyChannels />
+      },
+      {
+        path: '/activity',
+        element: <Activity />
+      },
+      {
+        path: '/createchannel',
+        element: <CreateChannel />
+      }
+    ]
   }
+
 ])
 
 function App() {
 
   return (
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
   )
 }
 

@@ -3,19 +3,14 @@ import db from "../db/postgres.js";
 import { getPodcastPreSignedUrl, uploadPodcastThumbanail } from "../utils/s3Utils.js";
 
 export const getAllPodcasts = async (req, res) => {
-    const { search, date, category } = req.query;
+    let { search, date, category, sort, page } = req.query;
 
-    const query = 'SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE 1=1';
-    const paramIndex = 1;
+    let query = 'SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE 1=1';
+    const paramIndex = 1; // Keeps track of how many parameters have been added
 
     if (search) {
         query += ` AND title = $${paramIndex}`;
         paramIndex++;
-    }
-
-    if (date) {
-        // Some date logic
-        // Increase parmaIndex
     }
 
     if (category) {
@@ -23,7 +18,36 @@ export const getAllPodcasts = async (req, res) => {
         paramIndex++;
     }
 
-    const { rows: response } = await db.query(query + ' GROUP BY podcasts.id LIMIT 10');
+    if (date) {
+
+    }
+
+    query += ' GROUP BY podcasts.id'; // Needs to be done before sorting
+
+    // Sorting logic
+    switch (sort) {
+        case 'trending':
+            query += ' ORDER BY likes'
+            break;
+
+        case 'mostpopular':
+            query += ' ORDER BY views'
+            break;
+
+        case 'dateposted':
+            query += ' ORDER BY dateposted'
+            break;
+    }
+
+    // Default page if omitted
+    if (!page) {
+        page = 1;
+    }
+
+    const offset = (page - 1) * 15; // Pagination logic
+    query += ` LIMIT 15 OFFSET ${offset}`
+
+    const { rows: response } = await db.query(query);
 
     for (const podcast of response) {
         await getPodcastPreSignedUrl(podcast);
