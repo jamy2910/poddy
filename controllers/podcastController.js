@@ -1,53 +1,12 @@
 import { nanoid } from "nanoid";
 import db from "../db/postgres.js";
-import { getPodcastPreSignedUrl, uploadPodcastThumbanail } from "../utils/s3Utils.js";
+import { getPodcastPreSignedUrl, getUploadUrlPodcast, uploadPodcastThumbnail, uploadPodcast } from "../utils/s3Utils.js";
+import { getAllPodcastQuery } from "../utils/queryUtils.js";
 
 export const getAllPodcasts = async (req, res) => {
     let { search, date, category, sort, page } = req.query;
 
-    let query = 'SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE 1=1';
-    const paramIndex = 1; // Keeps track of how many parameters have been added
-
-    if (search) {
-        query += ` AND title = $${paramIndex}`;
-        paramIndex++;
-    }
-
-    if (category) {
-        query += ` AND category = $${paramIndex}`;
-        paramIndex++;
-    }
-
-    if (date) {
-
-    }
-
-    query += ' GROUP BY podcasts.id'; // Needs to be done before sorting
-
-    // Sorting logic
-    switch (sort) {
-        case 'trending':
-            query += ' ORDER BY likes'
-            break;
-
-        case 'mostpopular':
-            query += ' ORDER BY views'
-            break;
-
-        case 'dateposted':
-            query += ' ORDER BY dateposted'
-            break;
-    }
-
-    // Default page if omitted
-    if (!page) {
-        page = 1;
-    }
-
-    const offset = (page - 1) * 15; // Pagination logic
-    query += ` LIMIT 15 OFFSET ${offset}`
-
-    const { rows: response } = await db.query(query);
+    const response = await getAllPodcastQuery(search, category, date, sort);
 
     for (const podcast of response) {
         await getPodcastPreSignedUrl(podcast);
@@ -75,21 +34,31 @@ export const getSinglePodcast = async (req, res) => {
     res.status(200).json(response[0]);
 }
 
+export const requestUploadUrl = async (req, res) => {
+    const podcastId = nanoid();
+    const uploadUrl = await getUploadUrlPodcast(podcastId);
+    res.status(200).json({ upload: uploadUrl, podcastId });
+}
+
 export const createPodcast = async (req, res) => {
 
     // *---- MAKE A SEPARATE ROUTE FOR REQUESTING THE URL FOR UPLOADING THE AUDIO ON CLIENT SIDE AND THEN DO THIS REQUEST AFTER ---*
-
+    const { id } = req.user;
     const { title, description } = req.body;
     const { channelId } = req.params;
-    const thumbnail = req.file;
-    const podcastId = nanoid(); // Create a unique id for the podcast
+    let { file, thumbnail } = req.files;
+    file = file[0];
+    thumbnail = thumbnail[0];
+    const podcastId = nanoid();
+
+    console.log(file, thumbnail);
 
     if (!thumbnail) {
         return res.status(404).json({ msg: 'Upload an image' })
     }
 
     thumbnail.id = podcastId; // Give the image an id for uploading to s3
-    const { id } = req.user;
+    file.id = podcastId;
 
     // Check to make sure the user owns the channel before upload
     const { rows: channelCheck } = await db.query('SELECT * FROM channels WHERE id = $1 AND userid = $2', [channelId, id]);
@@ -103,7 +72,8 @@ export const createPodcast = async (req, res) => {
     }
 
     // Upload thumbnail to s3
-    await uploadPodcastThumbanail(thumbnail);
+    await uploadPodcastThumbnail(thumbnail);
+    await uploadPodcast(file);
 
     // Insert data into database
     const { rows: response } = await db.query('INSERT INTO podcasts VALUES ($1, $2, $3, $4, $5, $6)', [podcastId, title, description, id, channelId, channelCheck[0].title]);
@@ -113,6 +83,9 @@ export const createPodcast = async (req, res) => {
 }
 
 export const deletePodcast = async (req, res) => {
+
+    // !--- REMOVE FILES FROM S3 BUCKET ON DELETE ---!
+
     const { id } = req.user;
     const { podcastId } = req.params;
 
@@ -151,4 +124,17 @@ export const editPodcast = async (req, res) => {
     const { rows: response } = await db.query('UPDATE podcasts SET title = $1, description = $2 WHERE id = $3 AND userid = $4', [title, description, podcastId, id]);
 
     res.status(200).json({ msg: 'Edited successfully' });
+}
+
+export const podcastFromChannel = async (req, res) => {
+    const { channelId } = req.params;
+    const query = 'SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE channelid = $1 GROUP BY podcasts.id LIMIT 15';
+
+    const { rows: response } = await db.query(query, [channelId]);
+
+    for (const podcast of response) {
+        await getPodcastPreSignedUrl(podcast);
+    }
+
+    res.status(200).json(response);
 }

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { CiMenuKebab as MenuIcon } from 'react-icons/ci';
 import DropdownBox from './DropdownBox';
+import { useAuth } from '../auth/AuthContext';
 
-
-const ChannelCardDropdown = () => {
+const PodcastCardDropdown = ({ userid, toggleModal }) => {
 
     const [open, setOpen] = useState(false);
     const containerRef = useRef();
+    const { user } = useAuth();
 
     const toggleMenu = () => {
         setOpen(!open);
@@ -34,9 +35,10 @@ const ChannelCardDropdown = () => {
                 <h3 className='hover:underline text-base font-normal inline-block cursor-pointer'>Report podcast</h3>
                 <h3 className='hover:underline text-base font-normal inline-block cursor-pointer'>Add to watchlist</h3>
                 <h3 className='hover:underline text-base font-normal inline-block cursor-pointer'>View channel</h3>
+                {user.id === userid && <h3 onClick={toggleModal} className='hover:underline text-base font-normal inline-block cursor-pointer'>Delete Podcast</h3>}
             </DropdownBox>}
-        </div>
+        </div >
     )
 }
 
-export default ChannelCardDropdown
+export default PodcastCardDropdown

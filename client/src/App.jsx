@@ -15,6 +15,12 @@ import Trending from './pages/Trending'
 import Explore from './pages/Explore'
 import PageLayout from './pages/PageLayout'
 import AuthContext from './auth/AuthContext'
+import ProtectedRoute from './auth/ProtectedRoute'
+import { toast, ToastContainer } from 'react-toastify'
+import CustomToast from './components/CustomToast'
+import SingleChannel from './pages/SingleChannel'
+import StatusContext from './components/StatusContext'
+import UploadPodcast from './pages/UploadPodcast'
 
 
 
@@ -52,7 +58,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/podcast/:id',
-        element: <SinglePodcast />
+        element: <ProtectedRoute><SinglePodcast /></ProtectedRoute>
       },
       {
         path: '/myprofile',
@@ -73,6 +79,14 @@ const router = createBrowserRouter([
       {
         path: '/createchannel',
         element: <CreateChannel />
+      },
+      {
+        path: '/channel/:channelId',
+        element: <SingleChannel />
+      },
+      {
+        path: '/upload/:channelId',
+        element: <UploadPodcast />
       }
     ]
   }
@@ -82,10 +96,12 @@ const router = createBrowserRouter([
 function App() {
 
   return (
-    <AuthContext>
-      <RouterProvider router={router} />
-    </AuthContext>
-
+    <StatusContext>
+      <AuthContext>
+        <RouterProvider router={router} />
+        <CustomToast />
+      </AuthContext>
+    </StatusContext>
   )
 }
 

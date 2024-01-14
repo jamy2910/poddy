@@ -1,29 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { customFetch } from '../utils/customFetch'
 import { useNavigate } from 'react-router-dom'
 import PodcastLoadingSpinner from '../components/PodcastLoadingSpinner';
+import { useAuth } from './AuthContext';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }) => {
 
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const getCurrentUser = async () => {
-            try {
-                const { data } = await customFetch.get('/profile');
-                console.log(data);
-            } catch (error) {
-                navigate('/');
-            }
+        setLoading(true);
+        if (!isAuthenticated) {
+            navigate('/login')
         }
-
-        getCurrentUser();
-    })
+        setLoading(false)
+    }, [])
 
     return (
         <div>
-            {loading ? <PodcastLoadingSpinner /> : { children }}
+            {loading ? <PodcastLoadingSpinner /> : children}
         </div>
     )
 }

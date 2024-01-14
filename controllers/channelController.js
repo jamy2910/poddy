@@ -109,3 +109,16 @@ export const editChannel = async (req, res) => {
 
     res.status(200).json({ msg: 'Edit successful' });
 };
+
+export const getUserChannels = async (req, res) => {
+    const { id } = req.user;
+
+    const query = 'SELECT * FROM channels WHERE userid = $1';
+    const { rows: response } = await db.query(query, [id]);
+
+    for (const channel of response) {
+        await getChannelPreSignedUrl(channel);
+    }
+
+    res.status(200).json(response);
+}

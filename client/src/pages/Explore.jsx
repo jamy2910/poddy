@@ -10,7 +10,7 @@ const Explore = () => {
 
   // Hooks
   const [podcasts, setPodcasts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ sort: "", category: "", duration: "", page: 1 });
 
   useEffect(() => {

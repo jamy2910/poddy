@@ -1,14 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import DropdownBox from './DropdownBox';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import StandardButton from './StandardButton';
+import { customFetch } from '../utils/customFetch';
 
 const AccountButton = () => {
 
     // Hooks
     const [open, setOpen] = useState(false);
     const containerRef = useRef();
-    const { user } = useAuth();
+    const { user, loginAuth } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const closeDropdown = (e) => {
@@ -28,14 +31,24 @@ const AccountButton = () => {
         setOpen(!open)
     }
 
+    const logoutUser = async () => {
+        try {
+            const response = await customFetch.get('/auth/logout');
+            await loginAuth();
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // JSX
     return (
         <div ref={containerRef} className='relative'>
-            <span onClick={toggleOpen} className='cursor-pointer hover:underline'>{user.username || 'Account'}</span>
+            <span onClick={toggleOpen} className='cursor-pointer hover:underline'>{user.username ? user?.username : 'Account'}</span>
 
             {open && <DropdownBox>
                 <NavLink onClick={toggleOpen} to={'/myprofile'} className='no-underline text-black hover:underline cursor-pointer'>My Profile</NavLink>
-                <NavLink onClick={toggleOpen} className='no-underline text-black hover:underline cursor-pointer'>Another random link</NavLink>
+                <StandardButton onClick={() => { logoutUser(); toggleOpen() }}>Logout</StandardButton>
             </DropdownBox>}
         </div>
     )

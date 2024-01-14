@@ -46,16 +46,17 @@ export const getChannelPreSignedUrl = async (file) => {
     const url = await getSignedUrl(s3, command);
 
     file.url = url;
+
 }
 
 
 
 // Podcasts Utils
 
-export const getUploadUrlPodcast = async (file) => {
+export const getUploadUrlPodcast = async (podcastId) => {
     const command = new PutObjectCommand({
-        Bucket: "Put podcast bucket name here",
-        Key: file.name
+        Bucket: podcastBucket,
+        Key: `podcast/${podcastId}`
     });
 
     const url = await getSignedUrl(s3, command);
@@ -63,7 +64,7 @@ export const getUploadUrlPodcast = async (file) => {
     return url;
 }
 
-export const uploadPodcastThumbanail = async (file) => {
+export const uploadPodcastThumbnail = async (file) => {
     const command = new PutObjectCommand({
         Bucket: podcastBucket,
         Key: `thumbnail/${file.id}`,
@@ -77,13 +78,13 @@ export const uploadPodcastThumbanail = async (file) => {
 export const uploadPodcast = async (file) => {
     const command = new PutObjectCommand({
         Bucket: podcastBucket,
-        Key: file.id,
+        Key: `podcast/${file.id}`,
         Body: file.buffer,
         ContentType: file.mimetype
     });
 
     await s3.send(command);
-}   
+}
 
 export const deletePodcast = async (id) => {
     const command = new DeleteObjectCommand({

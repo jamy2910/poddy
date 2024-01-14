@@ -1,9 +1,42 @@
 import StandardButton from '../components/StandardButton'
+import PodcastGrid from '../components/PodcastGrid'
 import { useNavigate } from 'react-router-dom'
+import ChannelCard from '../components/ChannelCard';
+import { customFetch } from '../utils/customFetch';
+import { createContext, useEffect, useState } from 'react';
+
+export const ChannelContext = createContext();
 
 const MyChannels = () => {
 
+  // Hooks
   const navigate = useNavigate();
+  const [myChannels, setMyChannels] = useState([]);
+
+  useEffect(() => {
+    const getChannels = async () => {
+      try {
+        const { data } = await customFetch.get('/channel/user');
+        setMyChannels(data)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getChannels();
+  }, []);
+
+  // Funcions
+  const deleteChannel = async (id) => {
+    try {
+      const response = await customFetch.delete(`/channel/${id}`);
+      const newChannels = myChannels.filter((channel) => {
+        if (channel.id !== id) return channel
+      })
+      setMyChannels(newChannels);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
 
@@ -16,7 +49,19 @@ const MyChannels = () => {
 
       <div className='mt-10'>
         <h2>My channels</h2>
-        <h3 className='font-medium mb-72'>You have no channels to display. Create a channel here.</h3>
+        <ChannelContext.Provider value={{ deleteChannel }}>
+          {myChannels.length > 0 && <PodcastGrid>
+            {myChannels.map((channel) => {
+              const { id, title, subheading, url } = channel;
+              return <ChannelCard id={id} title={title} src={url} />
+            })}
+          </PodcastGrid>}
+        </ChannelContext.Provider>
+
+
+        {myChannels.length === 0 && <h3>You have no channels. Try creating one</h3>}
+
+
       </div>
     </>
 

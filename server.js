@@ -10,6 +10,7 @@ import profileRouter from "./routes/profileRouter.js";
 import channelRouter from './routes/channelRouter.js';
 import podcastRouter from './routes/podcastRouter.js';
 import cookieParser from "cookie-parser";
+import accountSettingsRouter from './routes/accountSettingsRouter.js';
 import cors from 'cors';
 
 // App initialization
@@ -33,6 +34,7 @@ app.use('/api/v1/comment', commentRouter);
 app.use('/api/v1/like', likeRouter);
 app.use('/api/v1/subscribe', subscribeRouter);
 app.use('/api/v1/podcast', podcastRouter);
+app.use('/api/v1/settings', accountSettingsRouter);
 
 
 // Startup
