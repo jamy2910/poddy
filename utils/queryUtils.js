@@ -4,6 +4,9 @@ import db from "../db/postgres.js"
 // Requires some query parameters for filtering
 export const getAllPodcastQuery = async (search, category, date, sort, page) => {
 
+    let paramIndex = 1;
+    const values = [];
+
     let query = `
     SELECT podcasts.*, COALESCE(COUNT(likes.id), 0) AS likes 
     FROM podcasts LEFT JOIN likes ON podcasts.id = likes.podcastid WHERE NOT EXISTS (
@@ -14,11 +17,13 @@ export const getAllPodcastQuery = async (search, category, date, sort, page) => 
     if (search) {
         query += ` AND title = $${paramIndex}`;
         paramIndex++;
+        values.push(search);
     }
 
     if (category) {
         query += ` AND category = $${paramIndex}`;
         paramIndex++;
+        values.push(category);
     }
 
     if (date) {
@@ -50,7 +55,7 @@ export const getAllPodcastQuery = async (search, category, date, sort, page) => 
     const offset = (page - 1) * 15; // Pagination logic
     query += ` LIMIT 15 OFFSET ${offset}`;
 
-    const { rows: response } = await db.query(query);
+    const { rows: response } = await db.query(query, values);
 
     return response;
 

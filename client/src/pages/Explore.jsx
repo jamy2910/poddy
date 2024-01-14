@@ -11,7 +11,7 @@ const Explore = () => {
   // Hooks
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ sort: "", category: "", duration: "", page: 1 });
+  const [filters, setFilters] = useState({ search: "", sort: "", category: "", duration: "", page: 1 });
 
   useEffect(() => {
     const getPodcasts = async () => {
@@ -32,19 +32,30 @@ const Explore = () => {
   const filterPodcasts = async () => {
     const params = `?sort=${filters.sort}&category=${filters.category}&duration=${filters.duration}`;
     try {
-      const { data } = await customFetch.get('/podcasts' + params);
+      const { data } = await customFetch.get('/podcast' + params);
       setPodcasts(data);
     } catch (error) {
       console.log(error)
     }
   }
 
+  const updateSearch = (e) => {
+    const { value, name } = e.target;
+    setFilters({ ...filters, [name]: value });
+  }
+
+  const updateFilters = (name, value) => {
+    if (value === 'any') {
+      value = ''
+    }
+    setFilters({ ...filters, [name]: value });
+  }
   // JSX
   return (
     <>
-      <SearchBar />
+      <SearchBar updateSearch={updateSearch} value={filters.search} />
 
-      <FiltersDropdown filterFunction={filterPodcasts} />
+      <FiltersDropdown updateFilters={updateFilters} filterFunction={filterPodcasts} />
 
       {loading && <PodcastLoadingSpinner />}
       {!loading && <Podcasts podcastList={podcasts} />}
