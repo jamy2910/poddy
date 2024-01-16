@@ -1,30 +1,35 @@
 import React, { useState } from 'react'
 import CommentReplies from './CommentReplies';
+import CommentDropdown from './CommentDropdown';
+import { useAuth } from '../auth/AuthContext';
 
-const CommentCard = () => {
+const CommentCard = ({ username, body, userid, commentId, getComments }) => {
 
+    // Hooks
     const [showReplies, setShowReplies] = useState(false);
+    const { user } = useAuth();
 
+    // Functions
     const toggleReplies = () => {
         setShowReplies(!showReplies);
     }
 
+    // JSX
     return (
-        <div className='border-0 border-solid border-b-2 border-emerald-700'>
+        <div className='border-0 border-solid border-b-2 border-emerald-700 relative'>
             <div className='p-4'>
                 <div>
-                    <h3 className='m-0'>username1892</h3>
-                    <p className='break-words font-medium text-base'>This is the comment body. ThisIsAveryLongWordTooLongForTheLine Just some lonely dummy text. I should probably add some more comments so it has friends</p>
+                    <h3 className='m-0'>{username}</h3>
+                    <p className='break-words font-medium text-base'>{body}</p>
                 </div>
 
                 <div className='flex justify-between items-center'>
                     <span className='text-emerald-700 hover:underline cursor-pointer'>Like</span>
                     <span onClick={toggleReplies} className='cursor-pointer text-emerald-700 hover:underline'>Replies</span>
                 </div>
-
-
             </div>
             {showReplies && <CommentReplies />}
+            {userid === user.id && <CommentDropdown getComments={getComments} commentId={commentId} />}
         </div>
 
     )

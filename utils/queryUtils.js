@@ -15,9 +15,9 @@ export const getAllPodcastQuery = async (search, category, date, sort, page) => 
     )`;
 
     if (search) {
-        query += ` AND title = $${paramIndex}`;
+        query += ` AND title ILIKE $${paramIndex}`;
         paramIndex++;
-        values.push(search);
+        values.push('%' + search + '%');
     }
 
     if (category) {

@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { customFetch } from '../utils/customFetch'
-import { useNavigate } from 'react-router-dom'
-import PodcastLoadingSpinner from '../components/PodcastLoadingSpinner';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthContext';
+import { toast } from 'react-toastify';
 
 const ProtectedRoute = ({ children }) => {
 
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
 
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        setLoading(true);
         if (!isAuthenticated) {
-            navigate('/login')
-        }
-        setLoading(false)
-    }, [])
+            navigate('/login');
+            toast.error('You must be logged in');
+        };
+    }, []);
 
     return (
-        <div>
-            {loading ? <PodcastLoadingSpinner /> : children}
-        </div>
+        <Outlet />
     )
 }
 

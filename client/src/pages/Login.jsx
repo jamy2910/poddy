@@ -28,9 +28,10 @@ const Login = () => {
             setState('submitting');
             const { data } = await customFetch.post('/auth/login', inputValues);
             await loginAuth();
-            toast.success('Logged in')
+            toast.success('Logged in');
+            navigate('/');
         } catch (error) {
-            toast.error('Not logged in')
+            toast.error('Not logged in');
         }
 
         setState('idle');

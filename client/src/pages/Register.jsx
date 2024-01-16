@@ -10,13 +10,13 @@ const Register = () => {
 
     // Hooks
     const [inputValues, setInputValues] = useState({ username: "", password: "", email: "", confirmPassword: "" });
-    const { setLoading, setIdle } = useStatus();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     // Functions
     const onSumbit = async (e) => {
         e.preventDefault();
-        setLoading();
+        setLoading(true);
         const { password, confirmPassword } = inputValues;
         if (password !== confirmPassword) {
             return alert('Passwords do not match');
@@ -30,7 +30,7 @@ const Register = () => {
             toast.error(response?.data?.msg);
         }
 
-        setIdle();
+        setLoading(false);
     }
 
     const handleChange = (e) => {

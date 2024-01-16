@@ -11,6 +11,7 @@ export const uploadComment = async (req, res) => {
     if (channelSelect.length < 1) {
         return res.status(401).json({ msg: 'Unable to post comment' });
     }
+
     const { title: channelName } = channelSelect[0];
 
     const { rows: commentInput } = await db.query('INSERT INTO comments VALUES ($1, $2, $3, $4, $5, $6)', [commentId, body, username, channelName, podcastId, id]);
@@ -21,10 +22,7 @@ export const uploadComment = async (req, res) => {
 export const getComments = async (req, res) => {
     const { podcastId } = req.params;
 
-    const { rows: commentList } = await db.query('SELECT body, username FROM comments WHERE podcastid = $1', [podcastId]);
-    if (commentList.length < 1) {
-        return res.status(404).json({ msg: 'No comments found' });
-    }
+    const { rows: commentList } = await db.query('SELECT id, userid, body, username FROM comments WHERE podcastid = $1', [podcastId]);
 
     res.status(200).json(commentList);
 };

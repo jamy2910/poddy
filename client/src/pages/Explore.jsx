@@ -30,7 +30,7 @@ const Explore = () => {
 
   // Functions
   const filterPodcasts = async () => {
-    const params = `?sort=${filters.sort}&category=${filters.category}&duration=${filters.duration}`;
+    const params = `?sort=${filters.sort}&category=${filters.category}&duration=${filters.duration}&search=${filters.search}`;
     try {
       const { data } = await customFetch.get('/podcast' + params);
       setPodcasts(data);
@@ -40,8 +40,8 @@ const Explore = () => {
   }
 
   const updateSearch = (e) => {
-    const { value, name } = e.target;
-    setFilters({ ...filters, [name]: value });
+    const { value } = e.target;
+    setFilters({ ...filters, search: value });
   }
 
   const updateFilters = (name, value) => {
@@ -60,9 +60,6 @@ const Explore = () => {
       {loading && <PodcastLoadingSpinner />}
       {!loading && <Podcasts podcastList={podcasts} />}
     </>
-
-
-
   )
 }
 

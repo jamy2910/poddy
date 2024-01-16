@@ -1,15 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { customFetch } from "../utils/customFetch";
+import { useStatus } from "../components/StatusContext";
+import PodcastLoadingSpinner from "../components/PodcastLoadingSpinner";
 
 const UserContext = createContext();
 
 const AuthContext = ({ children }) => {
 
-
     const [user, setUser] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const loginAuth = async () => {
+        setLoading(true);
         try {
             const { data } = await customFetch.get('/profile');
             setUser(data)
@@ -18,6 +21,7 @@ const AuthContext = ({ children }) => {
             setUser({})
             setIsAuthenticated(false);
         }
+        setLoading(false);
     };
 
     const logoutAuth = () => {
@@ -30,9 +34,12 @@ const AuthContext = ({ children }) => {
     }, []);
 
     return (
-        <UserContext.Provider value={{ loginAuth, logoutAuth, user, isAuthenticated }}>
-            {children}
-        </UserContext.Provider>
+        <>
+            {loading ? <PodcastLoadingSpinner /> : <UserContext.Provider value={{ loginAuth, logoutAuth, user, isAuthenticated }}>
+                {children}
+            </UserContext.Provider>}
+        </>
+
     )
 }
 

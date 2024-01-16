@@ -16,7 +16,6 @@ import Explore from './pages/Explore'
 import PageLayout from './pages/PageLayout'
 import AuthContext from './auth/AuthContext'
 import ProtectedRoute from './auth/ProtectedRoute'
-import { toast, ToastContainer } from 'react-toastify'
 import CustomToast from './components/CustomToast'
 import SingleChannel from './pages/SingleChannel'
 import StatusContext from './components/StatusContext'
@@ -58,40 +57,45 @@ const router = createBrowserRouter([
       },
       {
         path: '/podcast/:id',
-        element: <ProtectedRoute><SinglePodcast /></ProtectedRoute>
-      },
-      {
-        path: '/myprofile',
-        element: <MyProfile />
-      },
-      {
-        path: '/manageaccount',
-        element: <ManageAccount />
-      },
-      {
-        path: '/mychannels',
-        element: <MyChannels />
-      },
-      {
-        path: '/activity',
-        element: <Activity />
-      },
-      {
-        path: '/createchannel',
-        element: <CreateChannel />
+        element: <SinglePodcast />
       },
       {
         path: '/channel/:channelId',
         element: <SingleChannel />
       },
       {
-        path: '/upload/:channelId',
-        element: <UploadPodcast />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '/upload/:channelId',
+            element: <UploadPodcast />
+          },
+          {
+            path: '/createchannel',
+            element: <CreateChannel />
+          },
+          {
+            path: '/activity',
+            element: <Activity />
+          },
+          {
+            path: '/manageaccount',
+            element: <ManageAccount />
+          },
+          {
+            path: '/myprofile',
+            element: <MyProfile />
+          },
+          {
+            path: '/mychannels',
+            element: <MyChannels />
+          },
+        ]
       }
     ]
   }
 
-])
+]);
 
 function App() {
 
