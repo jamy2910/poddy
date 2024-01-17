@@ -19,23 +19,8 @@ export const getAllPodcasts = async (req, res) => {
 export const getSinglePodcast = async (req, res) => {
     const { podcastId } = req.params;
 
-    // // Get the podcast
-    // const { rows: response } = await db.query('SELECT * FROM podcasts WHERE id = $1', [podcastId]);
-    // if (response.length < 1) {
-    //     return res.status(404).json({ msg: 'No podcast found' });
-    // }
-    // const podcast = response[0];
-
-    // // Get the amount of likes
-    // const { rows } = await db.query('SELECT COUNT(id) AS likes FROM likes WHERE podcastid = $1', [podcastId]);
-    // const { likes } = rows[0];
-    // podcast.likes = Number(likes);
-
-    // // If a user is logged in set isLiked to true or false
-
-
+    //  Check if a user is logged in
     let userId;
-
     if (req.cookies.token) {
         const { token } = req.cookies;
         const { id } = jwt.verify(token, process.env.JWT_SECRET);
@@ -44,8 +29,11 @@ export const getSinglePodcast = async (req, res) => {
 
     const podcast = await getSinglePodcastQuery(podcastId, userId);
 
-    await getPodcastPreSignedUrl(podcast);
+    if (!podcast) {
+        return res.status(404).json({ msg: 'No podcast found' });
+    }
 
+    await getPodcastPreSignedUrl(podcast);
     res.status(200).json(podcast);
 }
 
@@ -59,39 +47,28 @@ export const createPodcast = async (req, res) => {
 
     // *---- MAKE A SEPARATE ROUTE FOR REQUESTING THE URL FOR UPLOADING THE AUDIO ON CLIENT SIDE AND THEN DO THIS REQUEST AFTER ---*
     const { id } = req.user;
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
     const { channelId } = req.params;
     let { file, thumbnail } = req.files;
     file = file[0];
     thumbnail = thumbnail[0];
     const podcastId = nanoid();
 
-    console.log(file, thumbnail);
-
-    if (!thumbnail) {
-        return res.status(404).json({ msg: 'Upload an image' })
-    }
-
     thumbnail.id = podcastId; // Give the image an id for uploading to s3
-    file.id = podcastId;
+    file.id = podcastId; // Give the podcast the same id
 
-    // Check to make sure the user owns the channel before upload
-    const { rows: channelCheck } = await db.query('SELECT * FROM channels WHERE id = $1 AND userid = $2', [channelId, id]);
-    if (channelCheck.length < 1) {
-        return res.status(401).json({ msg: 'unauthenticated' });
-    }
+    // Get the channel title
+    let { rows: getChannelTitle } = await db.query('SELECT title FROM channels WHERE id = $1 AND userid = $2', [channelId, id]);
+    const { title: channelTitle } = getChannelTitle[0];
 
-    // Validate the user input
-    if (!title || !description || !thumbnail) {
-        return res.status(404).json({ msg: 'Please provide all values' });
-    }
+
 
     // Upload thumbnail to s3
     await uploadPodcastThumbnail(thumbnail);
     await uploadPodcast(file);
 
     // Insert data into database
-    const { rows: response } = await db.query('INSERT INTO podcasts VALUES ($1, $2, $3, $4, $5, $6)', [podcastId, title, description, id, channelId, channelCheck[0].title]);
+    const { rows: response } = await db.query('INSERT INTO podcasts VALUES ($1, $2, $3, $4, $5, $6, $7)', [podcastId, title, description, id, channelId, channelTitle, category]);
 
     // Response
     res.status(200).json({ msg: 'Upload success' });

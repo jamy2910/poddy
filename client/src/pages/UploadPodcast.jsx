@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 const UploadPodcast = () => {
 
     // Hooks
-    const [inputValues, setInputValues] = useState({ name: "", description: "" });
+    const [inputValues, setInputValues] = useState({ name: "", description: "", category: "" });
     const [file, setFile] = useState();
     const [thumbnail, setThumbnail] = useState();
     const [state, setState] = useState('idle');
@@ -44,6 +44,7 @@ const UploadPodcast = () => {
         formData.append('description', description);
         formData.append('file', file);
         formData.append('thumbnail', thumbnail);
+        formData.append('category', inputValues.category);
 
         try {
             const response = await customFetch.post(`/podcast/${channelId}`, formData);
@@ -51,8 +52,11 @@ const UploadPodcast = () => {
         } catch (error) {
             console.log(error);
         }
-
         setState('idle');
+    }
+
+    const handleCategoryChange = (e) => {
+        setInputValues({ ...inputValues, category: e.target.value });
     }
 
     if (state === 'submitting') return (
@@ -68,6 +72,17 @@ const UploadPodcast = () => {
                 <InlineInput onChange={handleTextChange} name={'name'} value={inputValues.name} title={'Podcast title'} />
                 <AccountDescriptionInput value={inputValues.description} name={'description'} onChange={handleTextChange} title={'Podcast description'} />
 
+                <div>
+                    <h3 className='font-medium'>Choose a category</h3>
+                    <select onChange={handleCategoryChange} className='text-base p-2'>
+                        <option className='p-2' value={''}>Category</option>
+                        <option className='p-2' value={'science/technology'}>Science/technology</option>
+                        <option className='p-2' value={'politics'}>Politics</option>
+                        <option className='p-2' value={'comedy'}>Comedy</option>
+                    </select>
+                </div>
+
+
                 <h3 className='font-medium'>Upload thumbnail</h3>
                 <input onChange={handleThumbnailChange} type="file" />
 
@@ -77,7 +92,7 @@ const UploadPodcast = () => {
             </div>
 
             <div className='text-center'>
-                <StandardButton onClick={onSubmit}>Create channel</StandardButton>
+                <StandardButton onClick={onSubmit}>Upload podcast</StandardButton>
             </div>
         </>
     )

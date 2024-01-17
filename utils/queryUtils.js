@@ -72,19 +72,25 @@ export const getSinglePodcastQuery = async (podcastId, userId) => {
     CASE WHEN EXISTS (SELECT * FROM likes WHERE userid = $1 AND podcastid = $2) THEN True ELSE False END AS isLiked
     FROM podcasts
     LEFT JOIN likes ON podcasts.id = likes.podcastid
-    WHERE podcasts.id = $3 GROUP BY podcasts.id`
+    WHERE podcasts.id = $3 
+    GROUP BY podcasts.id`
         values.push(userId, podcastId, podcastId);
     }
 
     if (!userId) {
         query = `
-        SELECT podcasts.*, COUNT(*) AS likes
+        SELECT podcasts.*, COUNT(likes.id) AS likes
         FROM podcasts
         LEFT JOIN likes ON podcasts.id = likes.podcastid
-        WHERE podcasts.id = $1 GROUP BY podcasts.id`
+        WHERE podcasts.id = $1 
+        GROUP BY podcasts.id`
         values.push(podcastId);
     }
     const { rows: response } = await db.query(query, values);
+
+    if (response.length < 1) {
+        return false;
+    }
 
     return response[0];
 }

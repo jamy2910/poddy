@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { customFetch } from "../utils/customFetch";
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 export const usePodcast = (id) => {
     // Hooks
     const [podcast, setPodcast] = useState({});
+    const navigate = useNavigate();
     useEffect(() => {
         getPodcast();
     }, []);
@@ -12,8 +14,14 @@ export const usePodcast = (id) => {
 
     // Functions
     const getPodcast = async () => {
-        const { data } = await customFetch.get(`/podcast/${id}`);
-        setPodcast(data);
+        try {
+            const { data } = await customFetch.get(`/podcast/${id}`);
+            setPodcast(data);
+        } catch (error) {
+            navigate('/explore');
+            toast.error("Couldn't find podcast");
+        }
+
     }
 
     const handleLike = async () => {
