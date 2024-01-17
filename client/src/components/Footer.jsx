@@ -17,10 +17,10 @@ const Footer = () => {
                 <h2 className='m-0 text-sm text-white absolute bottom-2 right-2'>@Copyright Poddy Ltd. 2023</h2>
             </div>
 
-            <div className='w-full h-96 grid grid-cols-2'>
+            {/* <div className='w-full h-96 grid grid-cols-2'>
                 <div className=" bg-green-100"></div>
                 <div className=' bg-teal-700'></div>
-            </div>
+            </div> */}
         </>
 
     )

@@ -1,12 +1,13 @@
 import { nanoid } from "nanoid";
 import db from "../db/postgres.js";
 import { getPodcastPreSignedUrl, getUploadUrlPodcast, uploadPodcastThumbnail, uploadPodcast } from "../utils/s3Utils.js";
-import { getAllPodcastQuery } from "../utils/queryUtils.js";
+import { getAllPodcastQuery, getSinglePodcastQuery } from "../utils/queryUtils.js";
+import jwt from 'jsonwebtoken'
 
 export const getAllPodcasts = async (req, res) => {
     let { search, date, category, sort, page } = req.query;
 
-    const response = await getAllPodcastQuery(search, category, date, sort);
+    const response = await getAllPodcastQuery(search, category, date, sort, page);
 
     for (const podcast of response) {
         await getPodcastPreSignedUrl(podcast);
@@ -18,20 +19,34 @@ export const getAllPodcasts = async (req, res) => {
 export const getSinglePodcast = async (req, res) => {
     const { podcastId } = req.params;
 
-    const { rows: response } = await db.query('SELECT * FROM podcasts WHERE id = $1', [podcastId]);
+    // // Get the podcast
+    // const { rows: response } = await db.query('SELECT * FROM podcasts WHERE id = $1', [podcastId]);
+    // if (response.length < 1) {
+    //     return res.status(404).json({ msg: 'No podcast found' });
+    // }
+    // const podcast = response[0];
 
-    const { rows } = await db.query('SELECT COUNT(id) AS likes FROM likes WHERE podcastid = $1', [podcastId]);
-    const { likes } = rows[0];
+    // // Get the amount of likes
+    // const { rows } = await db.query('SELECT COUNT(id) AS likes FROM likes WHERE podcastid = $1', [podcastId]);
+    // const { likes } = rows[0];
+    // podcast.likes = Number(likes);
 
-    response[0].likes = Number(likes);
+    // // If a user is logged in set isLiked to true or false
 
-    if (response.length < 1) {
-        return res.status(404).json({ msg: 'No podcast found' });
+
+    let userId;
+
+    if (req.cookies.token) {
+        const { token } = req.cookies;
+        const { id } = jwt.verify(token, process.env.JWT_SECRET);
+        userId = id;
     }
 
-    await getPodcastPreSignedUrl(response[0]);
+    const podcast = await getSinglePodcastQuery(podcastId, userId);
 
-    res.status(200).json(response[0]);
+    await getPodcastPreSignedUrl(podcast);
+
+    res.status(200).json(podcast);
 }
 
 export const requestUploadUrl = async (req, res) => {

@@ -9,6 +9,7 @@ import subscribeRouter from "./routes/subscribeRouter.js";
 import profileRouter from "./routes/profileRouter.js";
 import channelRouter from './routes/channelRouter.js';
 import podcastRouter from './routes/podcastRouter.js';
+import replyRouter from './routes/replyRouter.js';
 import cookieParser from "cookie-parser";
 import accountSettingsRouter from './routes/accountSettingsRouter.js';
 import cors from 'cors';
@@ -35,6 +36,7 @@ app.use('/api/v1/like', likeRouter);
 app.use('/api/v1/subscribe', subscribeRouter);
 app.use('/api/v1/podcast', podcastRouter);
 app.use('/api/v1/settings', accountSettingsRouter);
+app.use('/api/v1/reply', replyRouter);
 
 
 // Startup
