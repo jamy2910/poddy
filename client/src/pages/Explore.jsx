@@ -53,7 +53,7 @@ const Explore = () => {
   // JSX
   return (
     <>
-      <SearchBar updateSearch={updateSearch} value={filters.search} />
+      <SearchBar updateSearch={updateSearch} filterPodcasts={filterPodcasts} value={filters.search} />
 
       <FiltersDropdown updateFilters={updateFilters} filterFunction={filterPodcasts} />
 

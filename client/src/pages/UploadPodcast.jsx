@@ -7,10 +7,12 @@ import { useParams } from 'react-router-dom'
 import PodcastLoadingSpinner from '../components/PodcastLoadingSpinner'
 import { scrollTop } from '../utils/scrollToTop'
 import { toast } from 'react-toastify'
+import { useScrollTop } from '../hooks/useScrollTop'
 
 const UploadPodcast = () => {
 
     // Hooks
+    useScrollTop();
     const [inputValues, setInputValues] = useState({ name: "", description: "", category: "" });
     const [file, setFile] = useState();
     const [thumbnail, setThumbnail] = useState();

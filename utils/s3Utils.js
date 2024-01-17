@@ -15,7 +15,7 @@ const s3 = new S3Client({
     }
 });
 
-// Channel utils
+// !--- CHANNEL UTILS ---!
 
 export const uploadChannelPicToS3 = async (file) => {
     const command = new PutObjectCommand({
@@ -50,8 +50,7 @@ export const getChannelPreSignedUrl = async (file) => {
 }
 
 
-
-// Podcasts Utils
+// !--- PODCAST UPLOAD UTILS ---!
 
 export const getUploadUrlPodcast = async (podcastId) => {
     const command = new PutObjectCommand({

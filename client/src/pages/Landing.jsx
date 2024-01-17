@@ -3,12 +3,14 @@ import StandardButton from '../components/StandardButton';
 import { useNavigate } from 'react-router-dom';
 import { customFetch } from '../utils/customFetch';
 import Podcasts from '../components/Podcasts';
+import { useAuth } from '../auth/AuthContext';
 
 const Landing = () => {
 
     // Hooks
     const navigate = useNavigate();
     const [trendingPodcasts, setTrendingPodcasts] = useState([]);
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const fetchPodcasts = async () => {
@@ -30,10 +32,10 @@ const Landing = () => {
                     <h2 className='text-emerald-700 text-center'>Welcome to <span className='2xl:bg-emerald-700 shadow-black/50 2xl:shadow 2xl:text-white 2xl:p-4 rounded'>Poddy</span></h2>
                     <h3 className='text-emerald-700 text-center'>The <span className='2xl:bg-emerald-700 2xl:text-white 2xl:p-2 rounded shadow-black/50 2xl:shadow'>better</span> way of podcasting</h3>
 
-                    <div className='flex justify-center gap-10 mt-20'>
+                    {!isAuthenticated && <div className='flex justify-center gap-10 mt-20'>
                         <StandardButton onClick={() => { navigate('/login') }}>Log In</StandardButton>
                         <StandardButton onClick={() => { navigate('/register') }}>Register</StandardButton>
-                    </div>
+                    </div>}
                 </div>
             </div>
 

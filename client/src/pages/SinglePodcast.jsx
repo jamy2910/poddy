@@ -3,10 +3,13 @@ import demoSound from '/demo-sound.mp3'
 import { useParams } from 'react-router-dom'
 import Comments from '../components/Comments'
 import { usePodcast } from '../hooks/usePodcast'
+import { useScrollTop } from '../hooks/useScrollTop'
+
 
 const SinglePodcast = () => {
 
   // Hooks
+  useScrollTop();
   const { id } = useParams();
   const { podcast, handleLike } = usePodcast(id);
 
