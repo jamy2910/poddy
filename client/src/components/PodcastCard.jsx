@@ -5,7 +5,7 @@ import PodcastLoadingSpinner from './PodcastLoadingSpinner';
 import ConfirmDeletePodcast from './ConfirmDeletePodcast';
 import { customFetch } from '../utils/customFetch';
 
-const PodcastCard = ({ id, live, title, url, channel, likes, userid }) => {
+const PodcastCard = ({ id, live, title, url, channelname, likes, userid }) => {
 
   // Hooks
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const PodcastCard = ({ id, live, title, url, channel, likes, userid }) => {
       <img onLoad={onImageLoad} onClick={() => { navigate(`/podcast/${id}`) }} className={`object-contain h-40 cursor-pointer w-full ${imageLoading ? 'hidden' : 'block'}`} src={url} alt="" />
 
       <h2 onClick={() => { navigate(`/podcast/${id}`) }} className='m-0 cursor-pointer hover:underline mt-2 text-lg line-clamp-2'>{title}</h2>
-      <span className='block mb-5'>{channel}</span>
+      <span className='block mb-5'>{channelname}</span>
 
       {live && <span className='bg-red-600 text-white p-1 rounded absolute top-2 right-2'>Live</span>}
 

@@ -12,7 +12,7 @@ const FiltersDropdown = ({ live, filterFunction, updateFilters }) => {
 
   return (
     <div className='text-center mt-4'>
-      <StandardButton onClick={toggleFilters}>Filters</StandardButton>
+      <StandardButton onClick={toggleFilters}>{open ? 'Close filters' : 'Open filters'}</StandardButton>
 
       {open && <div className='border-solid border-b-2 border-0 border-emerald-700 pb-3'>
         <div className='mt-4 grid grid-cols-3 items-center box-border p-4'>

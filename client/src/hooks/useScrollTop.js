@@ -8,4 +8,6 @@ export const useScrollTop = () => {
             behavior: 'instant'
         });
     }, []);
+
+    return null;
 }

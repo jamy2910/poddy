@@ -2,7 +2,7 @@ import db from "../db/postgres.js"
 // Podcast queries
 
 // Requires some query parameters for filtering
-export const getAllPodcastQuery = async (search, category, date, sort, page) => {
+export const getAllPodcastQuery = async (search, category, date, sort, page, limit) => {
 
     let paramIndex = 1;
     const values = [];
@@ -35,7 +35,7 @@ export const getAllPodcastQuery = async (search, category, date, sort, page) => 
     // Sorting logic
     switch (sort) {
         case 'trending':
-            query += ' ORDER BY likes'
+            query += ' ORDER BY likes DESC'
             break;
 
         case 'mostpopular':
@@ -47,14 +47,22 @@ export const getAllPodcastQuery = async (search, category, date, sort, page) => 
             break;
     }
 
-    // Default page if omitted
-    if (!page) {
-        page = 1;
+    // Setting a limit to amount of podcasts in on query
+    if (limit) {
+        query += ` LIMIT $${paramIndex}`;
+        values.push(limit);
+        paramIndex++;
+    } else {
+        query += ' LIMIT 15';
     }
 
-    const offset = (page - 1) * 15; // Pagination logic
-    query += ` LIMIT 15 OFFSET ${offset}`;
-
+    // Offset to fetch pages
+    if (page) {
+        query += ` OFFSET $${paramIndex}`
+        values.push((page - 1) * 15);
+    } else {
+        query += ` OFFSET 0`;
+    }
     const { rows: response } = await db.query(query, values);
 
     return response;

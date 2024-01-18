@@ -14,7 +14,7 @@ const Landing = () => {
 
     useEffect(() => {
         const fetchPodcasts = async () => {
-            const { data } = await customFetch.get('/podcast');
+            const { data } = await customFetch.get('/podcast?sort=trending&limit=6');
             setTrendingPodcasts(data);
         }
 
@@ -25,7 +25,6 @@ const Landing = () => {
     // JSX
     return (
         <>
-
             <div className='grid grid-cols-2 justify-items-center gap-10 items-center font-main font-bold text-3xl h-96'>
                 <div className='bg-emerald-700 w-full h-full shadow-lg shadow-black/50 rounded'></div>
                 <div>

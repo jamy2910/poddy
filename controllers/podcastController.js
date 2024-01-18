@@ -5,9 +5,9 @@ import { getAllPodcastQuery, getSinglePodcastQuery } from "../utils/queryUtils.j
 import jwt from 'jsonwebtoken'
 
 export const getAllPodcasts = async (req, res) => {
-    let { search, date, category, sort, page } = req.query;
+    let { search, date, category, sort, page, limit } = req.query;
 
-    const response = await getAllPodcastQuery(search, category, date, sort, page);
+    const response = await getAllPodcastQuery(search, category, date, sort, page, limit);
 
     for (const podcast of response) {
         await getPodcastPreSignedUrl(podcast);

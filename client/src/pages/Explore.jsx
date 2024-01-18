@@ -17,7 +17,7 @@ const Explore = () => {
     const getPodcasts = async () => {
       setLoading(true);
       try {
-        const { data } = await customFetch.get(`/podcast?sort=trending`);
+        const { data } = await customFetch.get(`/podcast?sort=trending&page=${filters.page}`);
         setPodcasts(data);
       } catch (error) {
         console.log(error);
