@@ -54,11 +54,6 @@ const Landing = () => {
                     </div>
                 </div>
             </div>
-
-            <h2 className='mt-10 text-center sm:text-left'>Live Now</h2>
-
-            <Podcasts podcastList={trendingPodcasts} />
-
         </>
     )
 }
