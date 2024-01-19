@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import db from "../db/postgres.js";
-import { getPodcastPreSignedUrl, getUploadUrlPodcast, uploadPodcastThumbnail, uploadPodcast } from "../utils/s3Utils.js";
+import { getPodcastPreSignedUrl, getUploadUrlPodcast, uploadPodcastThumbnail, uploadPodcast, getPodcastAudio } from "../utils/s3Utils.js";
 import { getAllPodcastQuery, getSinglePodcastQuery } from "../utils/queryUtils.js";
 import jwt from 'jsonwebtoken'
 
@@ -34,6 +34,7 @@ export const getSinglePodcast = async (req, res) => {
     }
 
     await getPodcastPreSignedUrl(podcast);
+    await getPodcastAudio(podcast)
     res.status(200).json(podcast);
 }
 

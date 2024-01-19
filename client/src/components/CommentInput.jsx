@@ -37,7 +37,7 @@ const CommentInput = ({ getComments }) => {
         <div className='flex justify-center'>
             <div className='mx-auto'>
                 <label className='block' htmlFor="comment">Write a comment</label>
-                <TextArea minRows={5} value={input} onChange={onChange} className='resize-none text-base font-main w-commentBox outline-none border-2 border-emerald-700' />
+                <TextArea id='comment' minRows={5} value={input} onChange={onChange} className='resize-none text-base font-main md:w-commentBox w-72 sm:w-96 outline-none border-2 border-emerald-700' />
                 <button onClick={uploadComment} className='block px-4 mb-8 self-start mt-2 bg-emerald-700 border-0 text-white py-1 cursor-pointer text-base rounded'>Post</button>
             </div>
         </div>

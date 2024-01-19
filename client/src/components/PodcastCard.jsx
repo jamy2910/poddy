@@ -33,12 +33,12 @@ const PodcastCard = ({ id, live, title, url, channelname, likes, userid }) => {
 
   // JSX
   return (
-    <div className={`w-full box-border font-main border-solid border-2 border-emerald-700 p-5 py-3 relative rounded ${isDeleted && 'hidden'}`}>
+    <div className={`sm:w-full w-80 box-border font-main border-solid border-2 border-emerald-700 p-5 py-3 relative rounded ${isDeleted && 'hidden'}`}>
 
       {deleteModal && <ConfirmDeletePodcast deletePodcast={deletePodcast} toggleModal={toggleDeleteModal} id={id} />}
 
       {imageLoading && <PodcastLoadingSpinner />}
-      <img onLoad={onImageLoad} onClick={() => { navigate(`/podcast/${id}`) }} className={`object-contain h-40 cursor-pointer w-full ${imageLoading ? 'hidden' : 'block'}`} src={url} alt="" />
+      <img onLoad={onImageLoad} onClick={() => { navigate(`/podcast/${id}`) }} className={`object-contain h-40 max-w-full cursor-pointer w-full ${imageLoading ? 'hidden' : 'block'}`} src={url} alt="" />
 
       <h2 onClick={() => { navigate(`/podcast/${id}`) }} className='m-0 cursor-pointer hover:underline mt-2 text-lg line-clamp-2'>{title}</h2>
       <span className='block mb-5'>{channelname}</span>

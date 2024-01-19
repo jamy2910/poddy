@@ -37,7 +37,7 @@ const AccountSettings = () => {
     }
 
     return (
-        <div className='w-3/4 mt-10 mx-auto'>
+        <div className='sm:w-3/4 mt-10 mx-auto'>
             <h2 className='mt-0 mb-0 border-0 border-b-2 pb-2 border-solid border-emerald-700'>Account Settings</h2>
 
             <AccountDetailsSwitch title={'Explicit Content'} value={settings.explicit} name={'explicit'} description={'Enable this to see content from podcasts rated 18+'} changeValue={onChange} />

@@ -9,7 +9,7 @@ const ManageAccount = () => {
 
     return (
         <>
-            <div className='w-3/4 mx-auto'>
+            <div className='md:w-3/4 mx-auto'>
                 <div className='flex justify-between items-center'>
                     <h2>Account details</h2>
                     <StandardButton>Update details</StandardButton>

@@ -104,3 +104,13 @@ export const getPodcastPreSignedUrl = async (file) => {
 
     file.url = url;
 }
+
+export const getPodcastAudio = async (file) => {
+    const command = new GetObjectCommand({
+        Bucket: podcastBucket,
+        Key: `podcast/${file.id}`
+    });
+
+    const audio = await getSignedUrl(s3, command);
+    file.audio = audio;
+}

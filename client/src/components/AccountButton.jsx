@@ -3,14 +3,14 @@ import DropdownBox from './DropdownBox';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import StandardButton from './StandardButton';
-import { customFetch } from '../utils/customFetch';
+import { toast } from 'react-toastify';
 
 const AccountButton = () => {
 
     // Hooks
     const [open, setOpen] = useState(false);
     const containerRef = useRef();
-    const { user, loginAuth } = useAuth();
+    const { user, logoutAuth } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,11 +33,11 @@ const AccountButton = () => {
 
     const logoutUser = async () => {
         try {
-            const response = await customFetch.get('/auth/logout');
-            await loginAuth();
+            await logoutAuth();
+            toast('logged out');
             navigate('/');
         } catch (error) {
-            console.log(error);
+            toast.error('Error logging out')
         }
     }
 

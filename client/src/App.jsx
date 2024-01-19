@@ -40,10 +40,6 @@ const router = createBrowserRouter([
         element: <Trending />
       },
       {
-        path: '/live',
-        element: <Live />
-      },
-      {
         path: '/login',
         element: <Login />
       },

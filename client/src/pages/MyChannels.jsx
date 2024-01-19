@@ -52,8 +52,8 @@ const MyChannels = () => {
         <ChannelContext.Provider value={{ deleteChannel }}>
           {myChannels.length > 0 && <PodcastGrid>
             {myChannels.map((channel) => {
-              const { id, title, subheading, url } = channel;
-              return <ChannelCard id={id} title={title} src={url} />
+              const { id, title, url } = channel;
+              return <ChannelCard key={id} id={id} title={title} src={url} />
             })}
           </PodcastGrid>}
         </ChannelContext.Provider>

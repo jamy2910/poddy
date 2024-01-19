@@ -10,8 +10,7 @@ import PodcastLoadingSpinner from '../components/PodcastLoadingSpinner'
 const CreateChannel = () => {
 
   // Hooks
-  const [inputValues, setInputValues] = useState({ name: "", headline: "", description: "" });
-  const [image, setImage] = useState();
+  const [inputValues, setInputValues] = useState({ name: "", headline: "", description: "", image: {} });
   const [state, setState] = useState('idle');
   const navigate = useNavigate();
 
@@ -22,15 +21,14 @@ const CreateChannel = () => {
   }
 
   const handleImageChange = (e) => {
-    console.log(e.target.files)
-    setImage(e.target.files[0])
-    // setImage(e.target.files[0]);
-
+    const file = e.target.files[0];
+    setInputValues({ ...inputValues, image: file });
+    console.log(inputValues)
   }
 
   const onSubmit = async () => {
     setState('submitting');
-    const { name, headline, description } = inputValues;
+    const { name, headline, description, image } = inputValues;
     const formData = new FormData();
     formData.append('title', name);
     formData.append('subheading', headline);
@@ -42,7 +40,12 @@ const CreateChannel = () => {
       toast.success('Channel created successfully');
       navigate('/mychannels');
     } catch ({ response }) {
-      toast.error(response.data.msg);
+      if (response.data.msg) {
+        toast.error(response.data.msg)
+      } else {
+        toast.error('Error creating channel');
+      }
+
     }
 
     setState('idle');
@@ -52,23 +55,21 @@ const CreateChannel = () => {
 
   return (
     <>
-      <div className='w-3/4 mx-auto'>
+      <div className='md:w-3/4 mx-auto'>
         <h2>Create channel</h2>
-        <InlineInput onChange={handleTextChange} name={'name'} value={inputValues.name} title={'Channel name'} />
-        <InlineInput onChange={handleTextChange} name={'headline'} value={inputValues.headline} title={'Channel headline'} />
+        <InlineInput max={50} onChange={handleTextChange} name={'name'} value={inputValues.name} title={'Channel name'} />
+        <InlineInput max={100} onChange={handleTextChange} name={'headline'} value={inputValues.headline} title={'Channel headline'} />
         <AccountDescriptionInput value={inputValues.description} name={'description'} onChange={handleTextChange} title={'Channel description'} />
 
         <h3 className='font-medium'>Choose an image</h3>
-        <input onChange={handleImageChange} type="file" />
+        <input accept='image/*' onChange={handleImageChange} type="file" />
 
       </div>
 
-      <div className='text-center'>
+      <div className='text-center mt-4'>
         <StandardButton onClick={onSubmit}>Create channel</StandardButton>
       </div>
     </>
-
-
   )
 }
 

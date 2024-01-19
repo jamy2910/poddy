@@ -38,24 +38,26 @@ const SingleChannel = () => {
         fetchChannels();
         fetchPodcasts();
         setState('idle');
-    }, [])
+    }, []);
 
 
     // JSX
     if (state === 'loading') return <PodcastLoadingSpinner />
 
     return (
-        <div>
+        <>
             {imageLoading && <PodcastLoadingSpinner />}
-            <img onLoad={() => { setImageLoading(false) }} src={channel.url} alt="" className={`object-contain h-96 mx-auto block ${imageLoading && 'hidden'}`} />
+            <img onLoad={() => { setImageLoading(false) }} src={channel.url} alt="" className={`object-contain h-96 w-full mx-auto block ${imageLoading && 'hidden'}`} />
             <h2 className=' text-center mb-0'>{channel.title}</h2>
             {channel.subheading && <h2 className='font-normal text-lg text-center m-0'>{channel.subheading}</h2>}
 
 
-            {podcasts.length > 1 ? <PodcastGrid>
-                <Podcasts podcastList={podcasts} />
-            </PodcastGrid> : <h2>No podcasts yet</h2>}
-        </div>
+            {podcasts.length > 1 ?
+                <Podcasts podcastList={podcasts} /> :
+                <h2>No podcasts yet</h2>}
+        </>
+
+
     )
 }
 

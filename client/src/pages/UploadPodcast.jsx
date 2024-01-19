@@ -93,7 +93,7 @@ const UploadPodcast = () => {
 
             </div>
 
-            <div className='text-center'>
+            <div className='text-center mt-4'>
                 <StandardButton onClick={onSubmit}>Upload podcast</StandardButton>
             </div>
         </>
