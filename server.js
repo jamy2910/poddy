@@ -19,6 +19,7 @@ dotenv.config();
 const app = express();
 
 // Global middleware
+app.use(express.static('dist'))
 app.use(cors({ credentials: true, origin: true }))
 app.use(express.json());
 app.use(cookieParser());

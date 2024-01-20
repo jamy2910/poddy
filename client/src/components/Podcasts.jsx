@@ -6,7 +6,7 @@ const Podcasts = ({ podcastList }) => {
 
     return (
         <PodcastGrid>
-            {podcastList && podcastList.map((podcast) => {
+            {Array.isArray(podcastList) && podcastList.map((podcast) => {
                 return <ChannelCard key={podcast.id} {...podcast} />
             })}
         </PodcastGrid>
