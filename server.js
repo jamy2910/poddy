@@ -14,12 +14,12 @@ import cookieParser from "cookie-parser";
 import accountSettingsRouter from './routes/accountSettingsRouter.js';
 import cors from 'cors';
 
+
 // App initialization
 dotenv.config();
 const app = express();
 
 // Global middleware
-app.use(express.static('dist'))
 app.use(cors({ credentials: true, origin: true }))
 app.use(express.json());
 app.use(cookieParser());
