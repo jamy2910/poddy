@@ -28,7 +28,7 @@ export const loginUser = async (req, res) => {
     // Send JWT cookie
     const { id } = userCheck[0];
     const token = generateJWT({ id, username });
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
 
     // Send response
     res.status(200).json({ msg: 'Login success' });
@@ -57,7 +57,7 @@ export const registerUser = async (req, res) => {
 
     // Send a cookie with JWT
     const token = generateJWT({ id: userId, username });
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
 
     // Send Response
     res.status(200).json({ msg: 'Registration success', token });
